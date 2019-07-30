@@ -12,10 +12,17 @@ app.get('/check/:ownername/:repoName', async (req, res) =>{
     let repoName = req.params.repoName;
     let json = { OwnerName : ownerName, RepoName : repoName};
     console.log(json);
-    console.log(`https://github.com/${ownerName}/${repoName}/issues`);
-    // let gitResponse = await axios.get(`https://github.com/${ownerName}/${repoName}/issues`);
-    FileSaver.saveAs(await axios.get(`https://github.com/${ownerName}/${repoName}/issues`),"document.txt");
-    res.send(json);
+    console.log(`https://api.github.com/repos/${ownerName}/${repoName}/issues`);
+    let gitResponse = await axios.get(`https://api.github.com/repos/${ownerName}/${repoName}/issues`);
+    console.log(gitResponse);
+    for (var key in gitResponse) {
+        if (gitResponse.hasOwnProperty(key)) {
+          
+            console.log(gitResponse[key]);
+        }
+      }
+    let response = { "Total number of open issues" : ownerName, "opened in the last 24 hours" : repoName, "opened more than 24 hours ago but less than 7 days ago" : repoName, "opened more than 7 days ago" : repoName};
+    res.send(response);
 });
 
 app.get('/', async (req, res) =>{
